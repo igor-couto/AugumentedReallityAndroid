@@ -13,6 +13,8 @@ import android.view.Display;
 import android.view.Surface;
 import android.view.WindowManager;
 
+import com.example.igorcouto.augumentedreallity.Util.Print;
+
 import java.io.IOException;
 import java.util.List;
 
@@ -157,14 +159,8 @@ public class MyRender implements GLSurfaceView.Renderer, SurfaceTexture.OnFrameA
         screenCamera.setCameraRatio( mCameraRatio );
 
         Camera.Parameters parameters = mCamera.getParameters();
-
-        // TODO: ERASE LATER
-        //Log.d("CURRENT SIZE", "Current Height: " + height + " Current Width: " + width);
-        List<Camera.Size> allSizes = parameters.getSupportedPreviewSizes();
-        for (Camera.Size size : allSizes ) {
-            //Log.d("SUPPORTED SIZES", "Supported Size: " + "Height: " + size.height + " Width: " + size.width + " Aspect Ratio: " + (float) size.width/size.height);
-        }
-        // TODO: END ERASE
+        //TODO: Remove this test print
+        Print.showSupportedResolutions(parameters);
 
         Display display = ((WindowManager)context.getSystemService(WINDOW_SERVICE)).getDefaultDisplay();
 
@@ -238,12 +234,5 @@ public class MyRender implements GLSurfaceView.Renderer, SurfaceTexture.OnFrameA
                             0f, 0f, 5f,
                             cameraLookAtX, cameraLookAtY, cameraLookAtZ,
                             0f, 1.0f, 0.0f);
-    }
-
-    String matrixToString(float[] matrix){
-        return  String.valueOf(matrix[0])  + " "  + String.valueOf(matrix[4])  + " " + String.valueOf(matrix[8])  + " " + String.valueOf(matrix[12])  + "\n" +
-                String.valueOf(matrix[1])  + " "  + String.valueOf(matrix[5])  + " " + String.valueOf(matrix[9])  + " " + String.valueOf(matrix[13])  + "\n" +
-                String.valueOf(matrix[2])  + " "  + String.valueOf(matrix[6])  + " " + String.valueOf(matrix[10]) + " " + String.valueOf(matrix[14]) + "\n" +
-                String.valueOf(matrix[3])  + " "  + String.valueOf(matrix[7])  + " " + String.valueOf(matrix[11]) + " " + String.valueOf(matrix[15]) + "\n\n" ;
     }
 }
