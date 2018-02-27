@@ -11,7 +11,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 
-public class TriangleGray {
+public class MarioHat {
 
     private float[] modelMatrix = new float[16];
 
@@ -29,7 +29,7 @@ public class TriangleGray {
     private int numFaces;
 
 
-    public TriangleGray(Context context){
+    public MarioHat(Context context){
 
         m_program = Shaders.getInstance().getShader(Shaders.ShaderType.MODEL);
 
@@ -60,7 +60,7 @@ public class TriangleGray {
         textureCoordinateBuffer.put(objLoader.textureCoordinates).position(0);
         textureCoordinateBuffer.rewind();
 
-        Matrix.scaleM(modelMatrix,0, 0.1f, 0.1f, 0.1f);
+        Matrix.scaleM(modelMatrix,0, 0.01f, 0.01f, 0.01f);
     }
 
     void Draw(float[] mRotationMatrix, float[] mVMatrix, float[] mProjMatrix){

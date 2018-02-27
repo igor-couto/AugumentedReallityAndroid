@@ -17,7 +17,7 @@ public class MeshObject {
     protected FloatBuffer geometryBuffer;
 
 
-    protected Shaders.ShaderType shaderType = Shaders.ShaderType.PINPOINT;
+    protected Shaders.ShaderType shaderType = Shaders.ShaderType.MODEL;
     protected float[] geometry = null;
 
     public MeshObject(Shaders.ShaderType shaderType, float[] geometry){

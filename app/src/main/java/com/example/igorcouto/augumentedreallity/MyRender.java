@@ -13,11 +13,7 @@ import android.view.Display;
 import android.view.Surface;
 import android.view.WindowManager;
 
-import com.example.igorcouto.augumentedreallity.Util.ObjLoader;
-
 import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 import java.util.List;
 
 import static android.content.Context.WINDOW_SERVICE;
@@ -45,7 +41,7 @@ public class MyRender implements GLSurfaceView.Renderer, SurfaceTexture.OnFrameA
 
 
     private Triangle myTriangle;
-    private TriangleGray macaco;
+    private MarioHat macaco;
     private ScreenCamera screenCamera;
 
     float tempX = 0f;
@@ -62,7 +58,7 @@ public class MyRender implements GLSurfaceView.Renderer, SurfaceTexture.OnFrameA
 
         myTriangle = new Triangle();
 
-        macaco = new TriangleGray (context);
+        macaco = new MarioHat(context);
         macaco.Move(0f,0f,-5f);
 
         //myTriangle.Move(0.5f, 0.0f, -1.0f);
