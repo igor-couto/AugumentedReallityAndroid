@@ -9,7 +9,7 @@ import java.util.List;
 public class Print {
 
     /**
-     * Conver a given matrix into string and output it with Log
+     * Convert a given matrix into string and output it with Log
      * @param matrix Matrix that will be converted into string
      * @param name The matrix name
      */
@@ -23,13 +23,17 @@ public class Print {
     }
 
     /**
-     * Conver a given matrix into string and output it with Log
+     * Convert a given matrix into string and output it with Log
      * @param matrix Matrix that will be converted into string
      */
     static void showMatrix(float[] matrix){
         showMatrix(matrix, "");
     }
 
+    /**
+     * Display all the supported resolutions
+     * @param parameters Camera parameters
+     */
     static void showSupportedResolutions(Camera.Parameters parameters){
         List<Camera.Size> allSizes = parameters.getSupportedPreviewSizes();
         for (Camera.Size size : allSizes ) {
