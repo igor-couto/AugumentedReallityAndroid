@@ -29,7 +29,7 @@ public class CamGLSurfaceView extends GLSurfaceView implements SensorEventListen
     float[] gravity = new float[3];
     float[] geomag = new float[3];
     float[] vectorRotation = new float[5];
-    float[] inclination = new float[16]; // necessario?
+    float[] inclination = new float[16];
 
     public static float x; //pitch
     public static float y; //roll
