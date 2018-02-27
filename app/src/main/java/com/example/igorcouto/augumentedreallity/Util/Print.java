@@ -13,7 +13,7 @@ public class Print {
      * @param matrix Matrix that will be converted into string
      * @param name The matrix name
      */
-    static void showMatrix(float[] matrix, String name){
+    public static void showMatrix(float[] matrix, String name){
         String matrixString =
                         String.valueOf(matrix[0])  + " "  + String.valueOf(matrix[4])  + " " + String.valueOf(matrix[8])  + " " + String.valueOf(matrix[12])  + "\n" +
                         String.valueOf(matrix[1])  + " "  + String.valueOf(matrix[5])  + " " + String.valueOf(matrix[9])  + " " + String.valueOf(matrix[13])  + "\n" +
@@ -26,7 +26,7 @@ public class Print {
      * Convert a given matrix into string and output it with Log
      * @param matrix Matrix that will be converted into string
      */
-    static void showMatrix(float[] matrix){
+    public static void showMatrix(float[] matrix){
         showMatrix(matrix, "");
     }
 
@@ -34,7 +34,7 @@ public class Print {
      * Display all the supported resolutions
      * @param parameters Camera parameters
      */
-    static void showSupportedResolutions(Camera.Parameters parameters){
+    public static void showSupportedResolutions(Camera.Parameters parameters){
         List<Camera.Size> allSizes = parameters.getSupportedPreviewSizes();
         for (Camera.Size size : allSizes ) {
             Log.d("Camera Supported Sizes", "Height: " + size.height + " Width: " + size.width + " Aspect Ratio: " + (float) size.width/size.height);
