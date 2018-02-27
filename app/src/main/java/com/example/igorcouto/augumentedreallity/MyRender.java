@@ -12,58 +12,53 @@ import android.util.Log;
 import android.view.Display;
 import android.view.Surface;
 import android.view.WindowManager;
-
-import com.example.igorcouto.augumentedreallity.Util.Print;
-
 import java.io.IOException;
-import java.util.List;
-
 import static android.content.Context.WINDOW_SERVICE;
+import com.example.igorcouto.augumentedreallity.Util.Print;
 
 public class MyRender implements GLSurfaceView.Renderer, SurfaceTexture.OnFrameAvailableListener {
 
+//region Variables
+
     private final Context context;
-    private Camera mCamera;
-    private float mCameraRatio = 1.0f;
+    private Camera camera;
+    private float cameraRatio = 1.0f;
     private boolean updateSurface = false;
     private SurfaceTexture mSurface;
     private long mLastTime;
 
     private float rotationViewCamera = 0;
+    private float[] cameraQuaternion= new float[4];
 
-    // QUE MATRIZ É ESSA?
-    private float[] mSTMatrix = new float[16];
+    // Matrices:
+    private float[] mSTMatrix = new float[16]; // What is this?
 
-    private float[] mProjectionMatrix = new float[16];
-    private float[] mViewMatrix = new float[16];
-    private float[] mScreenViewMatrix = new float[16];
+    private float[] projectionMatrix = new float[16];
+    private float[] viewMatrix = new float[16];
+    private float[] screenViewMatrix = new float[16];
 
-    private float[] mCameraMatrix = new float[16];
-    private float[] mRotationMatrix = new float[16];
+    private float[] cameraMatrix = new float[16];
+    private float[] cameraRotationMatrix = new float[16];
 
-
-    private Triangle myTriangle;
+    // Drawable objects:
+    private Triangle triangle;
     private MarioHat marioHat;
     private ScreenCamera screenCamera;
 
-    float tempX = 0f;
+//endregion
 
-
-    public MyRender(Context context) {
-        this.context = context;
-    }
+    public MyRender(Context context) {this.context = context;}
 
     @Override
     public void onSurfaceCreated(GL10 gl10, EGLConfig config) {
 
         Shaders.getInstance().loadShaders();
 
-        myTriangle = new Triangle();
-
+        triangle = new Triangle();
         marioHat = new MarioHat(context);
-        marioHat.Move(0f,0f,-100f);
-
-        myTriangle.Move(10.0f, 0.0f, -1.0f);
+        
+        marioHat.Move(0f,0f,-150f);
+        triangle.Move(10.0f, 0.0f, -1.0f);
 
         GLES20.glEnable(GLES20.GL_CULL_FACE);
         GLES20.glCullFace(GLES20.GL_BACK);
@@ -78,15 +73,15 @@ public class MyRender implements GLSurfaceView.Renderer, SurfaceTexture.OnFrameA
         GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
 
         GLES20.glClearColor( 0.1f, 0.1f, 0.1f, 1.0f );
-        Matrix.setLookAtM ( mViewMatrix, 0,
+        Matrix.setLookAtM ( viewMatrix, 0,
                 0f, 0f , 5f,    // EYE
                 0f, 0f , 0f,    // CENTER
                 0f, 1f , 0f );  // UP
 
-        Matrix.setLookAtM(mScreenViewMatrix, 0, 0, 0, 5f, 0f, 0f, 0f, 0f, 1.0f, 0.0f);
+        Matrix.setLookAtM(screenViewMatrix, 0, 0, 0, 5f, 0f, 0f, 0f, 0f, 1.0f, 0.0f);
 
-        Matrix.setIdentityM(mCameraMatrix,0);
-        Matrix.invertM(mCameraMatrix, 0, mViewMatrix, 0);
+        Matrix.setIdentityM(cameraMatrix,0);
+        Matrix.invertM(cameraMatrix, 0, viewMatrix, 0);
 
         screenCamera = new ScreenCamera();
 
@@ -94,15 +89,15 @@ public class MyRender implements GLSurfaceView.Renderer, SurfaceTexture.OnFrameA
         mSurface = new SurfaceTexture( screenCamera.getTextureID() );
         mSurface.setOnFrameAvailableListener(this);
         try {
-            mCamera.setPreviewTexture(mSurface);
+            camera.setPreviewTexture(mSurface);
         } catch (IOException t) {
             Log.e("ERRO", "Cannot set preview texture target!");
         }
         /* Start the camera */
-        mCamera.startPreview();
+        camera.startPreview();
         mLastTime = 0;
 
-        screenCamera.setCameraRatio( mCameraRatio );
+        screenCamera.setCameraRatio( cameraRatio );
 
         synchronized(this) {
             updateSurface = false;
@@ -124,31 +119,25 @@ public class MyRender implements GLSurfaceView.Renderer, SurfaceTexture.OnFrameA
         }
 
         // Textura de fundo com a imagem da camera
-        screenCamera.Draw(mScreenViewMatrix, mProjectionMatrix);
+        screenCamera.Draw(screenViewMatrix, projectionMatrix);
+
+        // METODO QUATERNION
+        //Matrix.multiplyMM(vp, 0, projectionMatrix, 0, viewMatrix, 0);
+        //Matrix.setRotateM(mCube.mModelMatrix, 0, (float) ((2.0f * Math.acos(quat[0]) * 180.0f) / Math.PI), quat[1], quat[2], quat[3]);
 
 
-        // Triangulo
-        //Matrix.setIdentityM(mViewMatrix, 0);
-        //Matrix.rotateM(mViewMatrix,0,tempX,1,0,0);
-        //tempX += 0.1f;
-        /*
-        Matrix.setLookAtM ( mViewMatrix, 0,
-                            0 , 0   , 5f,       // EYE
-                            0f, 0f  , 0f,       //CENTER
-                            0f, 1.0f, 0.0f );   //UP
-        */
+        Matrix.setLookAtM ( viewMatrix, 0,
+                0f, 0f , 5f,    // EYE
+                0f, 0f , 0f,    // CENTER
+                0f, 1f , 0f );  // UP
 
-// METODO QUATERNION
-//        Matrix.multiplyMM(vp, 0, mProjectionMatrix, 0, mViewMatrix, 0);
-//        Matrix.setRotateM(mCube.mModelMatrix, 0, (float) ((2.0f * Math.acos(quat[0]) * 180.0f) / Math.PI), quat[1], quat[2], quat[3]);
+        //marioHat.Rotate((float) ((2.0f * Math.acos(cameraQuaternion[0]) * 180.0f) / Math.PI), cameraQuaternion[1], cameraQuaternion[2], cameraQuaternion[3]);
+        //triangle.Rotate((float) ((2.0f * Math.acos(cameraQuaternion[0]) * 180.0f) / Math.PI), cameraQuaternion[1], cameraQuaternion[2], cameraQuaternion[3]);
 
+        Matrix.rotateM(viewMatrix, 0, (float) ((2.0f * Math.acos(cameraQuaternion[0]) * 180.0f) / Math.PI), cameraQuaternion[1], cameraQuaternion[2], cameraQuaternion[3]);
 
-        marioHat.Draw(mRotationMatrix , mViewMatrix, mProjectionMatrix);
-
-        myTriangle.Draw(mRotationMatrix ,mViewMatrix, mProjectionMatrix);
-
-        //marioHat.Move(0f,0f,-0.9f);
-        //axis.Draw(mViewMatrix, mProjectionMatrix);
+        marioHat.Draw(cameraRotationMatrix , viewMatrix, projectionMatrix);
+        triangle.Draw(cameraRotationMatrix ,viewMatrix, projectionMatrix);
     }
 
     @Override
@@ -158,17 +147,17 @@ public class MyRender implements GLSurfaceView.Renderer, SurfaceTexture.OnFrameA
 
         GLES20.glViewport(0, 0, width, height);
         float mRatio = (float) width / height;
-        //Matrix.frustumM(mProjectionMatrix, 0, -mRatio, mRatio, -1, 1, 3, 1000);
-        Matrix.frustumM(mProjectionMatrix, 0, -1, 1, -1, 1, 3, 1000);
+        //Matrix.frustumM(projectionMatrix, 0, -mRatio, mRatio, -1, 1, 3, 1000);
+        Matrix.frustumM(projectionMatrix, 0, -1, 1, -1, 1, 3, 1000);
     }
 
     public void ajustCameraView(int width, int height){
 
-        mCameraRatio = (float)width/height;
-        screenCamera.setCameraRatio( mCameraRatio );
+        cameraRatio = (float)width/height;
+        screenCamera.setCameraRatio( cameraRatio );
 
-        Camera.Parameters parameters = mCamera.getParameters();
-        //TODO: Remove this test print
+        Camera.Parameters parameters = camera.getParameters();
+        //TODO: Remove this print
         Print.showSupportedResolutions(parameters);
 
         Display display = ((WindowManager)context.getSystemService(WINDOW_SERVICE)).getDefaultDisplay();
@@ -178,7 +167,7 @@ public class MyRender implements GLSurfaceView.Renderer, SurfaceTexture.OnFrameA
             rotationViewCamera = 270;
             screenCamera.Rotate(rotationViewCamera);
             //parameters.setPreviewSize(height, width);
-            mCamera.setDisplayOrientation(90);
+            camera.setDisplayOrientation(90);
         }
 
         if(display.getRotation() == Surface.ROTATION_90) {
@@ -194,12 +183,12 @@ public class MyRender implements GLSurfaceView.Renderer, SurfaceTexture.OnFrameA
         if(display.getRotation() == Surface.ROTATION_270) {
             Log.d("SURFACE ROTATION", "Surface.ROTATION_270");
             //parameters.setPreviewSize(width, height);
-            mCamera.setDisplayOrientation(180);
+            camera.setDisplayOrientation(180);
         }
 
-        mCamera.setParameters(parameters);
+        camera.setParameters(parameters);
 
-        setCamera(mCamera);
+        setCamera(camera);
     }
 
     @Override
@@ -208,40 +197,43 @@ public class MyRender implements GLSurfaceView.Renderer, SurfaceTexture.OnFrameA
     }
 
     public void setCamera(Camera camera) {
-        mCamera = camera;
+        this.camera = camera;
         Camera.Size previewSize = camera.getParameters().getPreviewSize();
-        //Log.d("AQUIIIII", "camera width: "+ previewSize.width + " Camera height: " + previewSize.height);
-        mCameraRatio = (float)previewSize.width/previewSize.height;
+        cameraRatio = (float)previewSize.width/previewSize.height;
         if ( screenCamera != null)
-            screenCamera.setCameraRatio( mCameraRatio );
+            screenCamera.setCameraRatio( cameraRatio );
     }
 
     public void setAcceleration(float[] acceleration) {
         //this.acceleration = acceleration;
     }
 
-    public void setRotationMatrix(float[] mRotationMatrix){
-        this.mRotationMatrix = mRotationMatrix;
-        Matrix.rotateM(mRotationMatrix,0, 90f,1,0,0);
-        //Matrix.multiplyMM(mViewMatrix, 0, mViewMatrix, 0, mRotationMatrix, 0);
+    public void setRotationMatrix(float[] cameraRotationMatrix){
+        this.cameraRotationMatrix = cameraRotationMatrix;
+        Matrix.rotateM(cameraRotationMatrix,0, 90f,1,0,0);
+        //Matrix.multiplyMM(viewMatrix, 0, viewMatrix, 0, cameraRotationMatrix, 0);
     }
 
     public void setRotationMatrix(float x, float y, float z) {
 
-        Matrix.rotateM(mCameraMatrix,0,x,1,0,0);
-        Matrix.rotateM(mCameraMatrix,0,y,0,1,0);
-        Matrix.rotateM(mCameraMatrix,0,z,0,0,1);
+        Matrix.rotateM(cameraMatrix,0,x,1,0,0);
+        Matrix.rotateM(cameraMatrix,0,y,0,1,0);
+        Matrix.rotateM(cameraMatrix,0,z,0,0,1);
 
-        Matrix.invertM(mViewMatrix,0,mCameraMatrix,0);
+        Matrix.invertM(viewMatrix,0,cameraMatrix,0);
     }
 
     public void setRotation(float pitch, float azimuth, float yaw){
         float cameraLookAtX = 0f + ( float ) Math.cos( Math.toRadians( yaw ) ) * ( float ) Math.cos( Math.toRadians( pitch ) );
         float cameraLookAtY = 0f - ( float ) Math.sin( Math.toRadians( pitch ) );
         float cameraLookAtZ = 5f + ( float ) Math.cos( Math.toRadians( pitch ) ) * ( float ) Math.sin( Math.toRadians( yaw ) );
-        Matrix.setLookAtM ( mViewMatrix, 0,
+        Matrix.setLookAtM ( viewMatrix, 0,
                             0f, 0f, 5f,
                             cameraLookAtX, cameraLookAtY, cameraLookAtZ,
                             0f, 1.0f, 0.0f);
+    }
+
+    public void setQuaternion(float[] quaternion){
+        this.cameraQuaternion = quaternion;
     }
 }

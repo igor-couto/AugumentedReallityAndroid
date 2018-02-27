@@ -96,11 +96,17 @@ public class Triangle {
 */
 
         //region MVRP
+        /*
         Matrix.multiplyMM(mMVPMatrix, 0, modelMatrix, 0, mVMatrix, 0);
         Matrix.multiplyMM(mMVPMatrix, 0, mRotationMatrix , 0, mMVPMatrix, 0);
         Matrix.multiplyMM(mMVPMatrix, 0, mProjMatrix , 0, mMVPMatrix, 0);
+        */
         //endregion
 
+        float[] ViewProjectionMatrix = new float[16];
+        Matrix.setIdentityM(ViewProjectionMatrix,0);
+        Matrix.multiplyMM(ViewProjectionMatrix, 0, mProjMatrix, 0, mVMatrix, 0);
+        Matrix.multiplyMM(mMVPMatrix, 0, ViewProjectionMatrix , 0, modelMatrix, 0);
 
 /*
         //region PRVM
@@ -120,6 +126,10 @@ public class Triangle {
         Matrix.setIdentityM( TranslateMatrix, 0 );
         Matrix.translateM( TranslateMatrix, 0, x, y, z);
         Matrix.multiplyMM( modelMatrix, 0, modelMatrix, 0, TranslateMatrix, 0);
+    }
+
+    public void Rotate(float angle, float x, float y, float z){
+        Matrix.rotateM(modelMatrix, 0, angle, x, y, z);
     }
 
 }

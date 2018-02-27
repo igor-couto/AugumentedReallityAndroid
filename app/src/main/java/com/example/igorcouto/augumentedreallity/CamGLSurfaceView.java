@@ -106,16 +106,19 @@ public class CamGLSurfaceView extends GLSurfaceView implements SensorEventListen
                 geomag = Filters.lowPass(event.values, geomag);
                 break;
             case Sensor.TYPE_ROTATION_VECTOR:
+
                 // METODO 1
+                /*
                 vectorRotation = Filters.lowPass(event.values, vectorRotation);
                 float[] mRotationMatrix = new float[16];
                 SensorManager.getRotationMatrixFromVector(mRotationMatrix, vectorRotation);
                 mRenderer.setRotationMatrix(mRotationMatrix);
+                */
 
                 //region METODO 2
-                //float[] quat = new float[4];
-                //SensorManager.getQuaternionFromVector(quat, event.values);
-                //mRenderer.setQuaternion(quat);
+                float[] quat = new float[4];
+                SensorManager.getQuaternionFromVector(quat, event.values);
+                mRenderer.setQuaternion(quat);
                 //endregion
                 break;
             case Sensor.TYPE_GAME_ROTATION_VECTOR:

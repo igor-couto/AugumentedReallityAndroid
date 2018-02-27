@@ -29,9 +29,6 @@ public class MarioHat {
 
     private int numFaces;
 
-    private double size = 0.0;
-
-
     public MarioHat(Context context){
 
         m_program = Shaders.getInstance().getShader(Shaders.ShaderType.MODEL);
@@ -45,7 +42,7 @@ public class MarioHat {
 
         mTextureDataHandle = TextureHelper.loadTexture(context, R.mipmap.hat_mario_color);
 
-        //region LoadObj
+
         ObjLoader objLoader = new ObjLoader(context, "hat_mario_model.obj");
 
         numFaces = objLoader.numFaces;
@@ -63,7 +60,7 @@ public class MarioHat {
         textureCoordinateBuffer.put(objLoader.textureCoordinates).position(0);
         textureCoordinateBuffer.rewind();
 
-            Matrix.scaleM(modelMatrix,0, 0.07f, 0.07f, 0.07f);
+        Matrix.scaleM(modelMatrix,0, 0.07f, 0.07f, 0.07f);
     }
 
     void Draw(float[] CameraRotationMatrix, float[] viewMatrix, float[] projectionMatrix){
@@ -90,9 +87,17 @@ public class MarioHat {
 
         //Matrix.rotateM(modelMatrix, 0, 1, 0, 1, 0);
 
-        Matrix.multiplyMM(mMVPMatrix, 0, modelMatrix, 0, viewMatrix, 0);
-        Matrix.multiplyMM(mMVPMatrix, 0, CameraRotationMatrix , 0, mMVPMatrix, 0);
-        Matrix.multiplyMM(mMVPMatrix, 0, projectionMatrix , 0, mMVPMatrix, 0);
+        //Matrix.multiplyMM(mMVPMatrix, 0, modelMatrix, 0, viewMatrix, 0);
+        //Matrix.multiplyMM(mMVPMatrix, 0, CameraRotationMatrix , 0, mMVPMatrix, 0);
+        //Matrix.multiplyMM(mMVPMatrix, 0, projectionMatrix , 0, mMVPMatrix, 0);
+
+
+
+        float[] ViewProjectionMatrix = new float[16];
+        Matrix.setIdentityM(ViewProjectionMatrix,0);
+        Matrix.multiplyMM(ViewProjectionMatrix, 0, projectionMatrix, 0, viewMatrix, 0);
+        Matrix.multiplyMM(mMVPMatrix, 0, ViewProjectionMatrix , 0, modelMatrix, 0);
+
 
 
         GLES20.glUniformMatrix4fv(muMVPMatrixHandle, 1, false, mMVPMatrix, 0);
@@ -106,5 +111,9 @@ public class MarioHat {
         Matrix.setIdentityM( TranslateMatrix, 0 );
         Matrix.translateM( TranslateMatrix, 0, x, y, z);
         Matrix.multiplyMM( modelMatrix, 0, modelMatrix, 0, TranslateMatrix, 0);
+    }
+
+    public void Rotate(float angle, float x, float y, float z){
+        Matrix.rotateM(modelMatrix, 0, angle, x, y, z);
     }
 }
