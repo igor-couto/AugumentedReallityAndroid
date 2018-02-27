@@ -1,0 +1,1 @@
+Abre a camera, seta como plano de fundo e desenha um triangulo no meio da tela.
