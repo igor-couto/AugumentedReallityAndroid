@@ -12,6 +12,8 @@ import android.view.Display;
 import android.view.Surface;
 import android.view.WindowManager;
 
+import com.example.igorcouto.augumentedreallity.Util.Filters;
+
 import static android.content.Context.WINDOW_SERVICE;
 
 public class CamGLSurfaceView extends GLSurfaceView implements SensorEventListener {
@@ -94,14 +96,14 @@ public class CamGLSurfaceView extends GLSurfaceView implements SensorEventListen
         switch (event.sensor.getType()) {
             case Sensor.TYPE_ACCELEROMETER:
                 //gravity = event.values.clone();
-                gravity = lowPassFilter(event.values, gravity);
+                gravity = Filters.lowPass(event.values, gravity);
                 break;
             case Sensor.TYPE_MAGNETIC_FIELD:
                 //geomag = event.values.clone();
-                geomag = lowPassFilter(event.values, geomag);
+                geomag = Filters.lowPass(event.values, geomag);
                 break;
             case Sensor.TYPE_ROTATION_VECTOR:
-                vectorRotation = lowPassFilter(event.values, vectorRotation);
+                vectorRotation = Filters.lowPass(event.values, vectorRotation);
                 float[] mRotationMatrix = new float[16];
                 SensorManager.getRotationMatrixFromVector(mRotationMatrix, event.values);
                 mRenderer.setRotationMatrix(mRotationMatrix);
@@ -135,19 +137,4 @@ public class CamGLSurfaceView extends GLSurfaceView implements SensorEventListen
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {}
-
-    public float[] lowPassFilter(float[] input, float[] prev){
-        float alpha = 0.03f;
-
-        if (input == null || prev == null)
-            throw new NullPointerException("input and prev float arrays must be non-NULL");
-        if (input.length != prev.length)
-            throw new IllegalArgumentException("input and prev must be the same length");
-
-        for (int i = 0; i < input.length; i++) {
-            prev[i] = prev[i] + alpha * (input[i] - prev[i]);
-        }
-
-        return prev;
-    }
 }
