@@ -43,7 +43,7 @@ public class MyRender implements GLSurfaceView.Renderer, SurfaceTexture.OnFrameA
 
 
     private Triangle myTriangle;
-    private MarioHat macaco;
+    private MarioHat marioHat;
     private ScreenCamera screenCamera;
 
     float tempX = 0f;
@@ -60,24 +60,28 @@ public class MyRender implements GLSurfaceView.Renderer, SurfaceTexture.OnFrameA
 
         myTriangle = new Triangle();
 
-        macaco = new MarioHat(context);
-        macaco.Move(0f,0f,-5f);
+        marioHat = new MarioHat(context);
+        marioHat.Move(0f,0f,-100f);
 
-        //myTriangle.Move(0.5f, 0.0f, -1.0f);
+        myTriangle.Move(10.0f, 0.0f, -1.0f);
 
-        //GLES20.glEnable(GLES20.GL_CULL_FACE);
-        //GLES20.glCullFace(GLES20.GL_BACK);
-        //GLES20.glFrontFace(GLES20.GL_CCW);
+        GLES20.glEnable(GLES20.GL_CULL_FACE);
+        GLES20.glCullFace(GLES20.GL_BACK);
+        GLES20.glFrontFace(GLES20.GL_CCW);
+
+        GLES20.glEnable(GLES20.GL_DEPTH_TEST);
+        // TODO: testar este metodo
+        //GLES20.glDepthFunc(GLES20.GL_LESS); // O que é isso? Testar
 
         //TODO o que é isso?
         GLES20.glEnable(GLES20.GL_BLEND);
         GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
 
-        GLES20.glClearColor( 0.3f, 0.3f, 0.3f, 1.0f );
+        GLES20.glClearColor( 0.1f, 0.1f, 0.1f, 1.0f );
         Matrix.setLookAtM ( mViewMatrix, 0,
                 0f, 0f , 5f,    // EYE
-                0f, 0f , 0f,    //CENTER
-                0f, 1f , 0f );  //UP
+                0f, 0f , 0f,    // CENTER
+                0f, 1f , 0f );  // UP
 
         Matrix.setLookAtM(mScreenViewMatrix, 0, 0, 0, 5f, 0f, 0f, 0f, 0f, 1.0f, 0.0f);
 
@@ -108,7 +112,7 @@ public class MyRender implements GLSurfaceView.Renderer, SurfaceTexture.OnFrameA
     @Override
     public void onDrawFrame(GL10 gl10) {
 
-        GLES20.glClear( GLES20.GL_DEPTH_BUFFER_BIT | GLES20.GL_COLOR_BUFFER_BIT );
+        GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT  | GLES20.GL_DEPTH_BUFFER_BIT);
 
         synchronized(this) {
             if (updateSurface) {
@@ -134,11 +138,16 @@ public class MyRender implements GLSurfaceView.Renderer, SurfaceTexture.OnFrameA
                             0f, 1.0f, 0.0f );   //UP
         */
 
-        macaco.Draw(mRotationMatrix , mViewMatrix, mProjectionMatrix);
+// METODO QUATERNION
+//        Matrix.multiplyMM(vp, 0, mProjectionMatrix, 0, mViewMatrix, 0);
+//        Matrix.setRotateM(mCube.mModelMatrix, 0, (float) ((2.0f * Math.acos(quat[0]) * 180.0f) / Math.PI), quat[1], quat[2], quat[3]);
 
-        //myTriangle.Draw(mRotationMatrix ,mViewMatrix, mProjectionMatrix);
 
-        //myTriangle.Move(0f,0f,-0.1f);
+        marioHat.Draw(mRotationMatrix , mViewMatrix, mProjectionMatrix);
+
+        myTriangle.Draw(mRotationMatrix ,mViewMatrix, mProjectionMatrix);
+
+        //marioHat.Move(0f,0f,-0.9f);
         //axis.Draw(mViewMatrix, mProjectionMatrix);
     }
 

@@ -25,6 +25,7 @@ public class CamGLSurfaceView extends GLSurfaceView implements SensorEventListen
     Sensor acelerometerSensor;
     Sensor magneticSensor;
     Sensor rotationVectorSensor;
+    Sensor gameRotationVectorSensor;
 
     float[] gravity = new float[3];
     float[] geomag = new float[3];
@@ -50,6 +51,7 @@ public class CamGLSurfaceView extends GLSurfaceView implements SensorEventListen
         acelerometerSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         magneticSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
         rotationVectorSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR);
+        gameRotationVectorSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_GAME_ROTATION_VECTOR);
     }
 
     @Override
@@ -65,6 +67,7 @@ public class CamGLSurfaceView extends GLSurfaceView implements SensorEventListen
         mSensorManager.registerListener(this, acelerometerSensor, SensorManager.SENSOR_DELAY_GAME);
         mSensorManager.registerListener(this, magneticSensor, SensorManager.SENSOR_DELAY_GAME);
         mSensorManager.registerListener(this, rotationVectorSensor, SensorManager.SENSOR_DELAY_GAME);
+        mSensorManager.registerListener(this, gameRotationVectorSensor, SensorManager.SENSOR_DELAY_GAME);
 
         mCamera = Camera.open();
         Camera.Parameters parameters = mCamera.getParameters();
@@ -103,10 +106,22 @@ public class CamGLSurfaceView extends GLSurfaceView implements SensorEventListen
                 geomag = Filters.lowPass(event.values, geomag);
                 break;
             case Sensor.TYPE_ROTATION_VECTOR:
+                // METODO 1
                 vectorRotation = Filters.lowPass(event.values, vectorRotation);
                 float[] mRotationMatrix = new float[16];
-                SensorManager.getRotationMatrixFromVector(mRotationMatrix, event.values);
+                SensorManager.getRotationMatrixFromVector(mRotationMatrix, vectorRotation);
                 mRenderer.setRotationMatrix(mRotationMatrix);
+
+                //region METODO 2
+                //float[] quat = new float[4];
+                //SensorManager.getQuaternionFromVector(quat, event.values);
+                //mRenderer.setQuaternion(quat);
+                //endregion
+                break;
+            case Sensor.TYPE_GAME_ROTATION_VECTOR:
+                //float[] mRotationMatrix2 = new float[16];
+                //SensorManager.getRotationMatrixFromVector(mRotationMatrix2 , event.values);
+                //mRenderer.setRotationMatrix(mRotationMatrix2);
                 break;
         }
 

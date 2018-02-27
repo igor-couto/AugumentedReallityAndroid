@@ -3,6 +3,7 @@ package com.example.igorcouto.augumentedreallity;
 import android.content.Context;
 import android.opengl.GLES20;
 import android.opengl.Matrix;
+import android.util.Log;
 
 import com.example.igorcouto.augumentedreallity.Util.ObjLoader;
 import com.example.igorcouto.augumentedreallity.Util.TextureHelper;
@@ -27,6 +28,8 @@ public class MarioHat {
     private FloatBuffer textureCoordinateBuffer;
 
     private int numFaces;
+
+    private double size = 0.0;
 
 
     public MarioHat(Context context){
@@ -60,10 +63,10 @@ public class MarioHat {
         textureCoordinateBuffer.put(objLoader.textureCoordinates).position(0);
         textureCoordinateBuffer.rewind();
 
-        Matrix.scaleM(modelMatrix,0, 0.01f, 0.01f, 0.01f);
+            Matrix.scaleM(modelMatrix,0, 0.07f, 0.07f, 0.07f);
     }
 
-    void Draw(float[] mRotationMatrix, float[] mVMatrix, float[] mProjMatrix){
+    void Draw(float[] CameraRotationMatrix, float[] viewMatrix, float[] projectionMatrix){
 
         GLES20.glUseProgram( m_program );
 
@@ -85,12 +88,12 @@ public class MarioHat {
         float[] mMVPMatrix = new float[16];
         Matrix.setIdentityM(mMVPMatrix, 0);
 
-        Matrix.rotateM(modelMatrix, 0, 1, 1, 1, 0);
+        //Matrix.rotateM(modelMatrix, 0, 1, 0, 1, 0);
 
+        Matrix.multiplyMM(mMVPMatrix, 0, modelMatrix, 0, viewMatrix, 0);
+        Matrix.multiplyMM(mMVPMatrix, 0, CameraRotationMatrix , 0, mMVPMatrix, 0);
+        Matrix.multiplyMM(mMVPMatrix, 0, projectionMatrix , 0, mMVPMatrix, 0);
 
-        Matrix.multiplyMM(mMVPMatrix, 0, modelMatrix, 0, mVMatrix, 0);
-        Matrix.multiplyMM(mMVPMatrix, 0, mRotationMatrix , 0, mMVPMatrix, 0);
-        Matrix.multiplyMM(mMVPMatrix, 0, mProjMatrix , 0, mMVPMatrix, 0);
 
         GLES20.glUniformMatrix4fv(muMVPMatrixHandle, 1, false, mMVPMatrix, 0);
 

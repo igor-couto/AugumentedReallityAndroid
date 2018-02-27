@@ -94,12 +94,21 @@ public class Triangle {
         Matrix.multiplyMM(mMVPMatrix, 0, modelMatrix , 0, mMVPMatrix, 0);
         //endregion
 */
+
         //region MVRP
         Matrix.multiplyMM(mMVPMatrix, 0, modelMatrix, 0, mVMatrix, 0);
         Matrix.multiplyMM(mMVPMatrix, 0, mRotationMatrix , 0, mMVPMatrix, 0);
         Matrix.multiplyMM(mMVPMatrix, 0, mProjMatrix , 0, mMVPMatrix, 0);
         //endregion
 
+
+/*
+        //region PRVM
+        Matrix.multiplyMM(mMVPMatrix, 0, mProjMatrix , 0, mRotationMatrix, 0);
+        Matrix.multiplyMM(mMVPMatrix, 0, mVMatrix , 0, mMVPMatrix, 0);
+        Matrix.multiplyMM(mMVPMatrix, 0, modelMatrix , 0, mMVPMatrix, 0);
+        //endregion
+*/
 
         GLES20.glUniformMatrix4fv(muMVPMatrixHandle, 1, false, mMVPMatrix, 0);
 
