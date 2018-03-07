@@ -126,11 +126,6 @@ public class MyRender implements GLSurfaceView.Renderer, SurfaceTexture.OnFrameA
         //Matrix.setRotateM(mCube.mModelMatrix, 0, (float) ((2.0f * Math.acos(quat[0]) * 180.0f) / Math.PI), quat[1], quat[2], quat[3]);
 
 
-        Matrix.setLookAtM ( viewMatrix, 0,
-                0f, 0f , 5f,    // EYE
-                0f, 0f , 0f,    // CENTER
-                0f, 1f , 0f );  // UP
-
         //marioHat.Rotate((float) ((2.0f * Math.acos(cameraQuaternion[0]) * 180.0f) / Math.PI), cameraQuaternion[1], cameraQuaternion[2], cameraQuaternion[3]);
         //triangle.Rotate((float) ((2.0f * Math.acos(cameraQuaternion[0]) * 180.0f) / Math.PI), cameraQuaternion[1], cameraQuaternion[2], cameraQuaternion[3]);
 
@@ -138,6 +133,7 @@ public class MyRender implements GLSurfaceView.Renderer, SurfaceTexture.OnFrameA
 
         marioHat.Draw(cameraRotationMatrix , viewMatrix, projectionMatrix);
         triangle.Draw(cameraRotationMatrix ,viewMatrix, projectionMatrix);
+
     }
 
     @Override
