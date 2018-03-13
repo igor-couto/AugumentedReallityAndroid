@@ -219,6 +219,7 @@ public class MyRender implements GLSurfaceView.Renderer, SurfaceTexture.OnFrameA
         Matrix.invertM(viewMatrix,0,cameraMatrix,0);
     }
 
+    // Metodo pitch yaw azim
     public void setRotation(float pitch, float azimuth, float yaw){
         float cameraLookAtX = 0f + ( float ) Math.cos( Math.toRadians( yaw ) ) * ( float ) Math.cos( Math.toRadians( pitch ) );
         float cameraLookAtY = 0f - ( float ) Math.sin( Math.toRadians( pitch ) );
