@@ -133,7 +133,6 @@ public class MyRender implements GLSurfaceView.Renderer, SurfaceTexture.OnFrameA
 
         marioHat.Draw(cameraRotationMatrix , viewMatrix, projectionMatrix);
         triangle.Draw(cameraRotationMatrix ,viewMatrix, projectionMatrix);
-
     }
 
     @Override
