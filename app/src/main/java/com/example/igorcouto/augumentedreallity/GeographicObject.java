@@ -3,22 +3,20 @@ package com.example.igorcouto.augumentedreallity;
 import android.opengl.GLES20;
 import android.opengl.Matrix;
 
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-
 public class GeographicObject {
 
 	Mesh mesh;
-	float[] position = new float[3];
+	private float[] position = new float[3];
+
 	//LatLng coordinate;
-    int shaderProgram;
+
+    private int shaderProgram;
 
     float[] modelMatrix = new float[16];
 
     public GeographicObject(Shaders.ShaderType shader, Mesh mesh){
         shaderProgram = Shaders.getInstance().getShader(shader);
         this.mesh = mesh;
-
     }
 
 	void draw(){
@@ -36,5 +34,4 @@ public class GeographicObject {
         Matrix.translateM( TranslateMatrix, 0, x, y, z);
         Matrix.multiplyMM( modelMatrix, 0, modelMatrix, 0, TranslateMatrix, 0);
     }
-
 }
