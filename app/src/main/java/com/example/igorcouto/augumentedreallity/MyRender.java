@@ -57,14 +57,15 @@ public class MyRender implements GLSurfaceView.Renderer, SurfaceTexture.OnFrameA
 
         axis = new Axis();
         triangle = new Triangle();
+        // TODO: não passar o context na inicializacao do obj
         marioHat = new MarioHat(context);
         
         marioHat.Move(0f,0f,-150f);
         triangle.Move(10.0f, 0.0f, -1.0f);
 
-        GLES20.glEnable(GLES20.GL_CULL_FACE);
-        GLES20.glCullFace(GLES20.GL_BACK);
-        GLES20.glFrontFace(GLES20.GL_CCW);
+        //GLES20.glEnable(GLES20.GL_CULL_FACE);
+        //GLES20.glCullFace(GLES20.GL_BACK);
+        //GLES20.glFrontFace(GLES20.GL_CCW);
 
         GLES20.glEnable(GLES20.GL_DEPTH_TEST);
         // TODO: testar este metodo
@@ -131,10 +132,11 @@ public class MyRender implements GLSurfaceView.Renderer, SurfaceTexture.OnFrameA
         //marioHat.Rotate((float) ((2.0f * Math.acos(cameraQuaternion[0]) * 180.0f) / Math.PI), cameraQuaternion[1], cameraQuaternion[2], cameraQuaternion[3]);
         //triangle.Rotate((float) ((2.0f * Math.acos(cameraQuaternion[0]) * 180.0f) / Math.PI), cameraQuaternion[1], cameraQuaternion[2], cameraQuaternion[3]);
 
-        Matrix.rotateM(viewMatrix, 0, (float) ((2.0f * Math.acos(cameraQuaternion[0]) * 180.0f) / Math.PI), cameraQuaternion[1], cameraQuaternion[2], cameraQuaternion[3]);
+       //Matrix.rotateM(viewMatrix, 0, (float) ((2.0f * Math.acos(cameraQuaternion[0]) * 180.0f) / Math.PI), cameraQuaternion[1], cameraQuaternion[2], cameraQuaternion[3]);
 
-        marioHat.Draw(cameraRotationMatrix , viewMatrix, projectionMatrix);
-        triangle.Draw(cameraRotationMatrix ,viewMatrix, projectionMatrix);
+        //marioHat.Draw(cameraRotationMatrix , viewMatrix, projectionMatrix);
+        //triangle.Draw(cameraRotationMatrix ,viewMatrix, projectionMatrix);
+        axis.Draw(viewMatrix,projectionMatrix);
     }
 
     @Override

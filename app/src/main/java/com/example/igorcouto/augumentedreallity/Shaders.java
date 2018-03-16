@@ -113,7 +113,7 @@ public class Shaders {
         fragmentShaderSources[2] =
                 "varying vec4 color;\n" +
                         "void main(){\n" +
-                        "\tgl_FragColor = color ; \n" +
+                        "\tgl_FragColor = vec4(0.0,1.0,0.0,1.0,) ; \n" +
                         "}";
 
 

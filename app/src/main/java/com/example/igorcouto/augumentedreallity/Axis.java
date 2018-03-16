@@ -61,7 +61,7 @@ public class Axis {
         ByteBuffer colorByteBuffer = ByteBuffer.allocateDirect(color.length * FLOAT_SIZE );
         colorByteBuffer.order(ByteOrder.nativeOrder());
         colorBuffer = colorByteBuffer.asFloatBuffer();
-        colorBuffer.put(geometry);
+        colorBuffer.put(color);
         colorBuffer.rewind();
 
         GLES20.glVertexAttribPointer(1, 4, GLES20.GL_FLOAT, false, 3 * FLOAT_SIZE, colorBuffer);
@@ -80,7 +80,6 @@ public class Axis {
         Matrix.multiplyMM(mMVPMatrix, 0, mProjMatrix, 0, mMVPMatrix, 0);
         GLES20.glUniformMatrix4fv(muMVPMatrixHandle, 1, false, mMVPMatrix, 0);
 
-        GLES20.glDrawArrays(GLES20.GL_LINES, 0, 3);
+        GLES20.glDrawArrays(GLES20.GL_LINES, 0, 6);
     }
-
 }
