@@ -44,8 +44,6 @@ public class Axis {
         float[] mMVPMatrix = new float[16];
         Matrix.setIdentityM(mMVPMatrix, 0);
 
-        //Matrix.rotateM(mMMatrix, 0, 1, 0, 1, 0);
-
         Matrix.multiplyMM(mMVPMatrix, 0, mVMatrix, 0, mMMatrix, 0);
         Matrix.multiplyMM(mMVPMatrix, 0, mProjMatrix, 0, mMVPMatrix, 0);
         GLES20.glUniformMatrix4fv(muMVPMatrixHandle, 1, false, mMVPMatrix, 0);
