@@ -101,15 +101,13 @@ public class Shaders {
 
         vertexShaderSources[2] =
                 "precision mediump float;\n" +
+                        "attribute vec3 inputColor"+
                         "varying vec4 color;\n" +
                         "attribute vec4 aPosition;\n" +
                         "uniform mat4 uMVPMatrix;\n" +
                         "void main() {\n" +
                         "\tgl_Position = uMVPMatrix * aPosition;\n" +
-                        "\tif(aPosition.x>0.0){color = vec4(1.0, 0.0, 0.0, 1.0);}\n" +
-                        "\tif(aPosition.y>0.0){color = vec4(0.0, 1.0, 0.0, 1.0);}\n" +
-                        "\tif(aPosition.z>0.0){color = vec4(0.0, 0.0, 1.0, 1.0);}\n" +
-
+                        "\tcolor = vec4(color, 0.1);" +
                         "}";
 
         fragmentShaderSources[2] =

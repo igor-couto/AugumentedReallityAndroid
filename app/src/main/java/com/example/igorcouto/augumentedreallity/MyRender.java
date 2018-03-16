@@ -44,6 +44,7 @@ public class MyRender implements GLSurfaceView.Renderer, SurfaceTexture.OnFrameA
     private Triangle triangle;
     private MarioHat marioHat;
     private ScreenCamera screenCamera;
+    private Axis axis;
 
 //endregion
 
@@ -54,6 +55,7 @@ public class MyRender implements GLSurfaceView.Renderer, SurfaceTexture.OnFrameA
 
         Shaders.getInstance().loadShaders();
 
+        axis = new Axis();
         triangle = new Triangle();
         marioHat = new MarioHat(context);
         
