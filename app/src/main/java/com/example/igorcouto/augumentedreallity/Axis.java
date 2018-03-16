@@ -9,6 +9,7 @@ import java.nio.FloatBuffer;
 
 public class Axis {
 
+    private static final int FLOAT_SIZE = 4;
     float[] mMMatrix = new float[16];
     private int muMVPMatrixHandle;
     int m_program;
@@ -16,9 +17,25 @@ public class Axis {
 
     private final float[] geometry =
     {
-                    1.0f, 0.0f, 0.0f, 1.0f,
-                    0.0f, 1.0f, 0.0f, 1.0f,
-                    0.0f, 0.0f, 1.0f, 1.0f
+        // X:
+        0.0f, 0.0f, 0.0f, 1.0f,
+        1.0f, 0.0f, 0.0f, 1.0f,
+        // Y:
+        0.0f, 0.0f, 0.0f, 1.0f,
+        0.0f, 1.0f, 0.0f, 1.0f,
+        // Z:
+        0.0f, 0.0f, 0.0f, 1.0f,
+        0.0f, 0.0f, 1.0f, 1.0f
+    };
+
+    private final float[] color =
+    {
+        // X:
+        1.0f, 0.0f, 0.0f,
+        // Y:
+        0.0f, 1.0f, 0.0f,
+        // Z:
+        0.0f, 0.0f, 1.0f
     };
 
     public Axis(){
@@ -28,7 +45,7 @@ public class Axis {
         Matrix.setIdentityM(mMMatrix, 0);
         muMVPMatrixHandle = GLES20.glGetUniformLocation(m_program, "uMVPMatrix");
 
-        ByteBuffer geometryByteBuffer = ByteBuffer.allocateDirect(geometry.length * 4);
+        ByteBuffer geometryByteBuffer = ByteBuffer.allocateDirect(geometry.length * FLOAT_SIZE );
         geometryByteBuffer.order(ByteOrder.nativeOrder());
         geometryBuffer = geometryByteBuffer.asFloatBuffer();
         geometryBuffer.put(geometry);
