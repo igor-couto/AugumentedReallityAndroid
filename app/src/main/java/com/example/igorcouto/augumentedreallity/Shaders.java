@@ -107,13 +107,13 @@ public class Shaders {
                         "uniform mat4 uMVPMatrix;\n" +
                         "void main() {\n" +
                         "\tgl_Position = uMVPMatrix * aPosition;\n" +
-                        "\tcolor = vec4(color, 0.1);" +
+                        "\tcolor = vec4(inputColor, 0.1);" +
                         "}";
 
         fragmentShaderSources[2] =
                 "varying vec4 color;\n" +
                         "void main(){\n" +
-                        "\tgl_FragColor = vec4(0.0,1.0,0.0,1.0,) ; \n" +
+                        "\tgl_FragColor = color ; \n" +
                         "}";
 
 
