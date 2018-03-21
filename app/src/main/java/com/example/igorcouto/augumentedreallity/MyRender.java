@@ -46,6 +46,17 @@ public class MyRender implements GLSurfaceView.Renderer, SurfaceTexture.OnFrameA
     private ScreenCamera screenCamera;
     private Axis axis;
 
+
+    float pitch = 0f;
+    float roll = 0f;
+    float azimuth = 0f;
+
+    private float[] mRotXMatrix = new float[16];
+    private float[] mRotYMatrix = new float[16];
+    private float[] mRotZMatrix = new float[16];
+
+    private float[] mTempMatrix = new float[16];
+
 //endregion
 
     public MyRender(Context context) {this.context = context;}
@@ -60,12 +71,15 @@ public class MyRender implements GLSurfaceView.Renderer, SurfaceTexture.OnFrameA
         // TODO: não passar o context na inicializacao do obj
         marioHat = new MarioHat(context);
         
-        marioHat.Move(0f,0f,-150f);
-        triangle.Move(10.0f, 0.0f, -1.0f);
+        //marioHat.Move(0f,0f,-150f);
 
-        //GLES20.glEnable(GLES20.GL_CULL_FACE);
-        //GLES20.glCullFace(GLES20.GL_BACK);
-        //GLES20.glFrontFace(GLES20.GL_CCW);
+        marioHat.Move(0f,0f,-5f);
+        triangle.Move(5.0f, 0.0f, 0.0f);
+
+
+        GLES20.glEnable(GLES20.GL_CULL_FACE);
+        GLES20.glCullFace(GLES20.GL_BACK);
+        GLES20.glFrontFace(GLES20.GL_CCW);
 
         GLES20.glEnable(GLES20.GL_DEPTH_TEST);
         // TODO: testar este metodo
@@ -124,6 +138,41 @@ public class MyRender implements GLSurfaceView.Renderer, SurfaceTexture.OnFrameA
         // Textura de fundo com a imagem da camera
         screenCamera.Draw(screenViewMatrix, projectionMatrix);
 
+        //region METODO NOVO
+
+        //Create a rotation matrix for x, y, z axis (orientation values are in Radians) 57 is 180/pi
+        Matrix.setRotateM(mRotXMatrix, 0, pitch*57, 1.0f, 0.0f, 0.0f);//Rotate the model: Pitch (X axis)
+        Matrix.setRotateM(mRotYMatrix, 0, azimuth*57, 0.0f, 1.0f, 0.0f);//Rotate the model: Yawl (Y axis)
+        Matrix.setRotateM(mRotZMatrix, 0, roll*57,0.0f, 0.0f, 1.0f);//Rotate the model: Roll (Z axis)
+
+
+        //Set camera like the default position, with 2.0f for Z instead of 1.0f
+        Matrix.setLookAtM(  viewMatrix, 0,
+                            0.0f, 0.0f, 0.0f,   // Eye (Camera position)
+                            0.0f, 0.0f, 0.0f,   // Center
+                            0.0f, 1.0f, 0.0f);  // Up
+
+
+
+
+        Matrix.multiplyMM(viewMatrix, 0, mRotYMatrix, 0, mRotXMatrix, 0);//multiply X by Y rotation
+        mTempMatrix= viewMatrix.clone();// We should avoid using same matrix for source and destination
+        Matrix.multiplyMM(viewMatrix, 0, mRotZMatrix, 0, mTempMatrix, 0);//multiply the result by Z rotation
+        mTempMatrix = viewMatrix.clone();//Save last rotation combining
+
+
+        Matrix.rotateM(viewMatrix, 0, 90,1f,0f,0f);
+
+        marioHat.Draw(viewMatrix, projectionMatrix);
+
+        //marioHat.Draw(mRotXMatrix, mRotYMatrix, mRotZMatrix, viewMatrix, projectionMatrix);
+
+
+         //endregion
+
+
+
+
         // METODO QUATERNION
         //Matrix.multiplyMM(vp, 0, projectionMatrix, 0, viewMatrix, 0);
         //Matrix.setRotateM(mCube.mModelMatrix, 0, (float) ((2.0f * Math.acos(quat[0]) * 180.0f) / Math.PI), quat[1], quat[2], quat[3]);
@@ -135,8 +184,8 @@ public class MyRender implements GLSurfaceView.Renderer, SurfaceTexture.OnFrameA
        //Matrix.rotateM(viewMatrix, 0, (float) ((2.0f * Math.acos(cameraQuaternion[0]) * 180.0f) / Math.PI), cameraQuaternion[1], cameraQuaternion[2], cameraQuaternion[3]);
 
         //marioHat.Draw(cameraRotationMatrix , viewMatrix, projectionMatrix);
-        //triangle.Draw(cameraRotationMatrix ,viewMatrix, projectionMatrix);
-        axis.Draw(viewMatrix,projectionMatrix);
+        triangle.Draw(cameraRotationMatrix ,viewMatrix, projectionMatrix);
+        //axis.Draw(viewMatrix,projectionMatrix);
     }
 
     @Override
@@ -146,8 +195,19 @@ public class MyRender implements GLSurfaceView.Renderer, SurfaceTexture.OnFrameA
 
         GLES20.glViewport(0, 0, width, height);
         float mRatio = (float) width / height;
+        /*
         //Matrix.frustumM(projectionMatrix, 0, -mRatio, mRatio, -1, 1, 3, 1000);
-        Matrix.frustumM(projectionMatrix, 0, -1, 1, -1, 1, 3, 1000);
+        Matrix.frustumM(    projectionMatrix, 0,
+                            -1, 1, -1, 1,          // Left Right Bottom Top
+                            1f, 1000);            // near, far
+        */
+
+        // Duas opcoes: Iniciar a projection com frustrumM ou perspectiveM
+        // https://stackoverflow.com/questions/8891289/opengl-es-2-0-camera-issues
+        float near = 1.0f;
+        float far = 1000.0f;
+        Matrix.perspectiveM(projectionMatrix, 0, 60.0f, mRatio, near, far);
+
     }
 
     public void ajustCameraView(int width, int height){
@@ -220,6 +280,12 @@ public class MyRender implements GLSurfaceView.Renderer, SurfaceTexture.OnFrameA
         Matrix.rotateM(cameraMatrix,0,z,0,0,1);
 
         Matrix.invertM(viewMatrix,0,cameraMatrix,0);
+    }
+
+    public void novoSetRotation(float pitch, float roll, float azimuth){
+        this.pitch = pitch;
+        this.roll = roll;
+        this.azimuth = azimuth;
     }
 
     // Metodo pitch yaw azim

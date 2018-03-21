@@ -50,7 +50,9 @@ public class CamGLSurfaceView extends GLSurfaceView implements SensorEventListen
         mSensorManager = (SensorManager)getContext().getSystemService(getContext().SENSOR_SERVICE);
         acelerometerSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         magneticSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
+
         rotationVectorSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR);
+
         gameRotationVectorSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_GAME_ROTATION_VECTOR);
     }
 
@@ -108,17 +110,23 @@ public class CamGLSurfaceView extends GLSurfaceView implements SensorEventListen
             case Sensor.TYPE_ROTATION_VECTOR:
 
                 // METODO 1
-                /*
+
                 vectorRotation = Filters.lowPass(event.values, vectorRotation);
-                float[] mRotationMatrix = new float[16];
+                float[] mRotationMatrix = new float[16]; // Criar apenas uma vez
                 SensorManager.getRotationMatrixFromVector(mRotationMatrix, vectorRotation);
-                mRenderer.setRotationMatrix(mRotationMatrix);
-                */
+                //setRotationMatrix(mRotationMatrix);
+
+
+                SensorManager.getOrientation(mRotationMatrix, orientation);//Get yaw/pitch/roll from matrix
+                float pitch = orientation[1];
+                float roll = orientation[2];
+                float azimuth = orientation[0];
+                mRenderer.novoSetRotation(pitch, roll, azimuth);
 
                 //region METODO 2
                 float[] quat = new float[4];
                 SensorManager.getQuaternionFromVector(quat, event.values);
-                mRenderer.setQuaternion(quat);
+                //mRenderer.setQuaternion(quat);
                 //endregion
                 break;
             case Sensor.TYPE_GAME_ROTATION_VECTOR:

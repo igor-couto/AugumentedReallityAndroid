@@ -15,6 +15,7 @@ import java.nio.FloatBuffer;
 public class MarioHat {
 
     private float[] modelMatrix = new float[16];
+    private float[] mTempMatrix = new float[16];
 
     private int m_program;
     private int muMVPMatrixHandle;
@@ -60,7 +61,91 @@ public class MarioHat {
         textureCoordinateBuffer.put(objLoader.textureCoordinates).position(0);
         textureCoordinateBuffer.rewind();
 
-        Matrix.scaleM(modelMatrix,0, 0.07f, 0.07f, 0.07f);
+        //float scaleFactor = 5.0f;
+        //Matrix.scaleM(modelMatrix,0, scaleFactor, scaleFactor, scaleFactor);
+
+
+
+    }
+
+
+    void Draw( float[] mRotXMatrix, float[] mRotYMatrix, float[] mRotZMatrix, float[] viewMatrix, float[] projectionMatrix){
+
+        GLES20.glUseProgram( m_program );
+
+        GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
+        // Bind the texture to this unit.
+        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, mTextureDataHandle);
+
+        // Tell the texture uniform sampler to use this texture in the shader by binding to texture unit 0.
+        GLES20.glUniform1i(mTextureUniformHandle, 0);
+
+        GLES20.glVertexAttribPointer(0, 3, GLES20.GL_FLOAT, false, 3 * 4, geometryBuffer);
+        GLES20.glEnableVertexAttribArray(0);
+
+        GLES20.glVertexAttribPointer(1, 2, GLES20.GL_FLOAT, false, 2 * 4, textureCoordinateBuffer);
+        GLES20.glEnableVertexAttribArray(1);
+
+        float[] mMVPMatrix = new float[16];
+        Matrix.setIdentityM(mMVPMatrix, 0);
+
+        //Combine rotations
+
+        Matrix.setIdentityM(mTempMatrix, 0);//Temp matrix for combining them
+
+        Matrix.multiplyMM(viewMatrix, 0, mRotYMatrix, 0, mRotXMatrix, 0);//multiply X by Y rotation
+        mTempMatrix= viewMatrix.clone();// We should avoid using same matrix for source and destination
+        Matrix.multiplyMM(viewMatrix, 0, mRotZMatrix, 0, mTempMatrix, 0);//multiply the result by Z rotation
+        mTempMatrix = viewMatrix.clone();//Save last rotation combining
+
+
+        //float scaleFactor = 5.0f;
+        //Matrix.scaleM(modelMatrix,0, scaleFactor, scaleFactor, scaleFactor);
+
+        //Combine with View matrix
+        Matrix.multiplyMM(mTempMatrix, 0, viewMatrix, 0, modelMatrix, 0 );
+
+        //Pass through projection matrix for final MVP combines matrix
+        Matrix.multiplyMM(mMVPMatrix, 0, projectionMatrix, 0, mTempMatrix, 0 );
+
+
+        GLES20.glUniformMatrix4fv(muMVPMatrixHandle, 1, false, mMVPMatrix, 0);
+
+        GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, numFaces);
+
+    }
+
+    void Draw(float[] viewMatrix, float[] projectionMatrix){
+        GLES20.glUseProgram( m_program );
+
+        GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
+        // Bind the texture to this unit.
+        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, mTextureDataHandle);
+
+        // Tell the texture uniform sampler to use this texture in the shader by binding to texture unit 0.
+        GLES20.glUniform1i(mTextureUniformHandle, 0);
+
+
+        GLES20.glVertexAttribPointer(0, 3, GLES20.GL_FLOAT, true, 3 * 4, geometryBuffer);
+        GLES20.glEnableVertexAttribArray(0);
+
+        GLES20.glVertexAttribPointer(1, 2, GLES20.GL_FLOAT, false, 2 * 4, textureCoordinateBuffer);
+        GLES20.glEnableVertexAttribArray(1);
+
+
+        float[] mMVPMatrix = new float[16];
+        Matrix.setIdentityM(mMVPMatrix, 0);
+
+
+        float[] ViewProjectionMatrix = new float[16];
+        Matrix.setIdentityM(ViewProjectionMatrix,0);
+        Matrix.multiplyMM(ViewProjectionMatrix, 0, projectionMatrix, 0, viewMatrix, 0);
+        Matrix.multiplyMM(mMVPMatrix, 0, ViewProjectionMatrix , 0, modelMatrix, 0);
+
+
+        GLES20.glUniformMatrix4fv(muMVPMatrixHandle, 1, false, mMVPMatrix, 0);
+
+        GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, numFaces);
     }
 
     void Draw(float[] CameraRotationMatrix, float[] viewMatrix, float[] projectionMatrix){
@@ -97,7 +182,6 @@ public class MarioHat {
         Matrix.setIdentityM(ViewProjectionMatrix,0);
         Matrix.multiplyMM(ViewProjectionMatrix, 0, projectionMatrix, 0, viewMatrix, 0);
         Matrix.multiplyMM(mMVPMatrix, 0, ViewProjectionMatrix , 0, modelMatrix, 0);
-
 
 
         GLES20.glUniformMatrix4fv(muMVPMatrixHandle, 1, false, mMVPMatrix, 0);
