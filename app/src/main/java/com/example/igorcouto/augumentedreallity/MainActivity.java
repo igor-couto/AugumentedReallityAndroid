@@ -25,25 +25,17 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        //setRequestedOrientation (ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         setRequestedOrientation (ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(new String[]{Manifest.permission.CAMERA}, MY_CAMERA_REQUEST_CODE);
         }
 
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_main);  // precisa dessa linha?
 
-
-        // Cria a view do OpenGL
         myGLSurfaceView = new CamGLSurfaceView(this);
-        // Diz a versão do OpenGl a ser utilizada
-        // myGLSurfaceView.setEGLContextClientVersion(2);
-        // Configuração dos atributos do OpenGL ( Tamanho dos canais de cor, depth buffer e stencil )
-        //myGLSurfaceView.setEGLConfigChooser( 8, 8, 8, 8, 16, 0);
 
         setContentView(myGLSurfaceView);
-
     }
 
     @Override

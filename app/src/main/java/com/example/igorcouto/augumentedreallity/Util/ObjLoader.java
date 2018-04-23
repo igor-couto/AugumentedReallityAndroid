@@ -1,7 +1,8 @@
 package com.example.igorcouto.augumentedreallity.Util;
 
-import android.content.Context;
 import android.util.Log;
+
+import com.example.igorcouto.augumentedreallity.App;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -16,7 +17,7 @@ public final class ObjLoader {
     public final float[] textureCoordinates;
     public final float[] positions;
 
-    public ObjLoader(Context context, String file) {
+    public ObjLoader(String file) {
 
         Vector<Float> vertices = new Vector<>();
         Vector<Float> normals = new Vector<>();
@@ -26,9 +27,8 @@ public final class ObjLoader {
         BufferedReader reader = null;
         try {
             Log.d("OBJLOADER","Tentando abrir o arquivo " + file +" ...");
-            InputStreamReader in = new InputStreamReader(context.getAssets().open(file));
+            InputStreamReader in = new InputStreamReader(App.getContext().getAssets().open(file));
             reader = new BufferedReader(in);
-
             // read file until EOF
             String line;
             while ((line = reader.readLine()) != null) {

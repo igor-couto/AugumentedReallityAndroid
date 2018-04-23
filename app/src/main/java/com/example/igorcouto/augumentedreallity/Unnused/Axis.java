@@ -1,7 +1,9 @@
-package com.example.igorcouto.augumentedreallity;
+package com.example.igorcouto.augumentedreallity.Unnused;
 
 import android.opengl.GLES20;
 import android.opengl.Matrix;
+
+import com.example.igorcouto.augumentedreallity.Shaders;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
