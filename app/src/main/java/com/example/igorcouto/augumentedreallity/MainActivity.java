@@ -6,15 +6,9 @@ import android.content.pm.PackageManager;
 import android.opengl.GLSurfaceView;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 
-/*
-echo "# android-opengles2-ar" >> README.md
-git init
-git add README.md
-git commit -m "first commit"
-git remote add origin https://github.com/igor-couto/android-opengles2-ar.git
-git push -u origin master
- */
+import com.example.igorcouto.augumentedreallity.Util.HTTPHelper;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -31,11 +25,12 @@ public class MainActivity extends AppCompatActivity {
             requestPermissions(new String[]{Manifest.permission.CAMERA}, MY_CAMERA_REQUEST_CODE);
         }
 
-        setContentView(R.layout.activity_main);  // precisa dessa linha?
-
         myGLSurfaceView = new CamGLSurfaceView(this);
 
         setContentView(myGLSurfaceView);
+
+        HTTPHelper httpHelper = new HTTPHelper();
+        httpHelper.getPlaces();
     }
 
     @Override
@@ -61,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
 
                 } else {
 
-                    // permission denied, boo! Disable the
+                    // permission denied, Disable the
                     // functionality that depends on this permission.
                 }
                 return;

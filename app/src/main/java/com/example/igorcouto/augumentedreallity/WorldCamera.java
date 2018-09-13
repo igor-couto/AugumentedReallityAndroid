@@ -71,10 +71,10 @@ public class WorldCamera extends GeographicObject{
     public void rotate(float[] mRotXMatrix, float[] mRotYMatrix, float[] mRotZMatrix){
         resetLookAt();
 
-        Matrix.multiplyMM(viewMatrix, 0, mRotYMatrix, 0, mRotXMatrix, 0);//multiply X by Y rotation
-        rotationTempMatrix = viewMatrix.clone();// We should avoid using same matrix for source and destination
-        Matrix.multiplyMM(viewMatrix, 0, mRotZMatrix, 0, rotationTempMatrix, 0);//multiply the result by Z rotation
-        rotationTempMatrix = viewMatrix.clone();//Save last rotation combining
+        Matrix.multiplyMM(viewMatrix, 0, mRotYMatrix, 0, mRotXMatrix, 0); //multiply X by Y rotation
+        rotationTempMatrix = viewMatrix.clone(); // We should avoid using same matrix for source and destination
+        Matrix.multiplyMM(viewMatrix, 0, mRotZMatrix, 0, rotationTempMatrix, 0); //multiply the result by Z rotation
+        rotationTempMatrix = viewMatrix.clone(); //Save last rotation combining
 
         // TODO Do I have to rotate my view matrix to make things go in front of the device?
         Matrix.rotateM(viewMatrix, 0, 90,1f,0f,0f);
