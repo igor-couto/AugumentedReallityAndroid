@@ -20,8 +20,10 @@ public class HTTPHelper {
     private final int TIMEOUT_MILLIS = 30000;
 
 
-    public void getPlaces(){
+    public List<Places> getPlaces(){
+        return null;
 
+/*
         Thread thread = new Thread(new Runnable() {
 
             @Override
@@ -37,6 +39,7 @@ public class HTTPHelper {
         });
 
         thread.start();
+        */
     }
 
     private String doGet(String path) throws IOException {
